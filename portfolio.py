@@ -1,9 +1,11 @@
 from utils import get_stock_price, get_stock_info, validate_ticker, StockPriceError
+from persistence import load_investments, save_investments
+
 
 class Portfolio:
     def __init__(self):
         # investments dict: key = ticker, value = dict with amount invested and optionally other data
-        self.investments = {}
+        self.investments = load_investments()
 
     def add_investment(self, ticker, amount_invested):
         ticker = ticker.upper().strip()
@@ -14,6 +16,7 @@ class Portfolio:
             self.investments[ticker]['amount_invested'] += amount_invested
         else:
             self.investments[ticker] = {'amount_invested': amount_invested}
+        save_investments(self.investments)
 
     def remove_investment(self, ticker):
         ticker = ticker.upper().strip()
@@ -21,7 +24,7 @@ class Portfolio:
             del self.investments[ticker]
         else:
             raise KeyError(f"{ticker} not found in portfolio")
-
+        save_investments(self.investments)
     def calculate_total_invested(self):
         return sum(data['amount_invested'] for data in self.investments.values())
 
