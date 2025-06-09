@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Stock</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Update Stock</h2>
+    <form method="POST" action="/update">
+        <label>Ticker Symbol:</label>
+        <input type="text" name="ticker" required><br>
+        <label>New Quantity:</label>
+        <input type="number" name="quantity" required><br>
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Stock Portfolio</h2>
+    {% if stocks %}
+        <ul>
+        {% for stock in stocks %}
+            <li>{{ stock.ticker }} — Quantity: {{ stock.quantity }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No stocks in your portfolio.</p>
+    {% endif %}
+</body>
+</html>
