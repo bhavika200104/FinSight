@@ -219,4 +219,4 @@ if __name__ == "__main__":
 # get_stock_price(ticker) - Get single stock price
 # get_multiple_stock_prices(tickers) - Get stock prices for multiple tickers
 # validate_ticker(ticker) - Check if ticker exists
-# get_stock_info(ticker) - Detailed stock data
+# get_stock_info(ticker) - Detailed stock dataa
