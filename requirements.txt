@@ -1,2 +1,4 @@
+flask
+flask-cors
 yfinance>=0.2.18
 requests>=2.31.0
