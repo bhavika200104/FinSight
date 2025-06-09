@@ -4,13 +4,100 @@
     <meta charset="UTF-8">
     <title>Delete Stock</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background: #f4f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 28px 24px 28px;
+        }
+        h2 {
+            text-align: center;
+            color: #c0392b;
+            margin-bottom: 28px;
+        }
+        form label {
+            display: block;
+            margin-bottom: 6px;
+            color: #34495e;
+            font-weight: 500;
+        }
+        form input[type="text"] {
+            width: 100%;
+            padding: 9px 10px;
+            margin-bottom: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #f9fafb;
+            transition: border 0.2s;
+        }
+        form input:focus {
+            border-color: #e74c3c;
+            outline: none;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px 0;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: #c0392b;
+        }
+        #message {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 1rem;
+            color: #27ae60;
+            min-height: 22px;
+        }
+        #message:empty {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h2>Delete Stock</h2>
-    <form method="POST" action="/delete">
-        <label>Ticker Symbol:</label>
-        <input type="text" name="ticker" required><br>
-        <button type="submit">Delete Stock</button>
-    </form>
+    <div class="container">
+        <div style="display: flex; justify-content: flex-end; gap: 16px; margin-bottom: 18px;">
+            <a href="{{ url_for('index') }}" style="color: #2c3e50; text-decoration: none; font-weight: 600;">View Portfolio</a>
+        </div>
+        <h2>Delete Stock</h2>
+        <form id="removeForm">
+            <label>Ticker Symbol:</label>
+            <input type="text" name="ticker" required>
+            <button type="submit">Delete Stock</button>
+        </form>
+        <div id="message"></div>
+    </div>
+    <script>
+        document.getElementById('removeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const ticker = this.ticker.value;
+            const response = await fetch('/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticker })
+            });
+            const result = await response.json();
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = result.message || result.error;
+            msgDiv.style.color = result.message ? '#27ae60' : '#e74c3c';
+        });
+    </script>
 </body>
 </html>

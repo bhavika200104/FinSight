@@ -4,17 +4,165 @@
     <meta charset="UTF-8">
     <title>View Portfolio</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background: #f4f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 28px 24px 28px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 28px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+        th {
+            background: #f4f6fa;
+            color: #34495e;
+            font-weight: 600;
+            border-bottom: 2px solid #d1d5db;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        tr:hover {
+            background: #eaf1fb;
+        }
+        .summary {
+            margin-top: 18px;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px 18px;
+            color: #34495e;
+            font-size: 1.08rem;
+        }
+        .profit {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .loss {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        .empty-msg {
+            text-align: center;
+            color: #888;
+            font-size: 1.1rem;
+            margin-top: 32px;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        .ticker {
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .stock-name {
+            color: #4f8cff;
+            font-size: 0.97em;
+        }
+        .change-up {
+            color: #27ae60;
+        }
+        .change-down {
+            color: #e74c3c;
+        }
+    </style>
 </head>
 <body>
-    <h2>Stock Portfolio</h2>
-    {% if stocks %}
-        <ul>
-        {% for stock in stocks %}
-            <li>{{ stock.ticker }} — Quantity: {{ stock.quantity }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No stocks in your portfolio.</p>
-    {% endif %}
+    <div class="container">
+        <div style="display: flex; justify-content: flex-end; gap: 16px; margin-bottom: 18px;">
+            <a href="{{ url_for('add_form') }}" style="color: #4f8cff; text-decoration: none; font-weight: 600;">Add Stock</a>
+            <a href="{{ url_for('remove_form') }}" style="color: #e74c3c; text-decoration: none; font-weight: 600;">Delete Stock</a>
+        </div>
+        <h2>Stock Portfolio</h2>
+        {% if portfolio %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Name</th>
+                        <th>Amount Invested</th>
+                        <th>Current Price</th>
+                        <th>Change</th>
+                        <th>Profit/Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ticker, stock in portfolio.items() %}
+                    <tr>
+                        <td class="ticker">{{ ticker }}</td>
+                        <td class="stock-name">
+                            {% if stock.name %}{{ stock.name }}{% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if stock.amount_invested is defined %}
+                                ${{ "%.2f"|format(stock.amount_invested) }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if stock.current_price is defined and stock.current_price is not none %}
+                                ${{ "%.2f"|format(stock.current_price) }}
+                            {% else %}
+                                <span class="error">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if stock.change is defined and stock.change_percent is defined %}
+                                <span class="{{ 'change-up' if stock.change >= 0 else 'change-down' }}">
+                                    {{ stock.change >= 0 and '+' or '' }}{{ "%.2f"|format(stock.change) }}
+                                    ({{ stock.change_percent >= 0 and '+' or '' }}{{ "%.2f"|format(stock.change_percent) }}%)
+                                </span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if stock.profit_loss_per_stock is defined %}
+                                <span class="{{ 'profit' if stock.profit_loss_per_stock >= 0 else 'loss' }}">
+                                    ${{ "%.2f"|format(stock.profit_loss_per_stock) }}
+                                </span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="summary">
+                <div><strong>Total Invested:</strong> ${{ "%.2f"|format(total_invested) }}</div>
+                <div><strong>Current Value:</strong> ${{ "%.2f"|format(current_value) }}</div>
+                <div>
+                    <strong>Overall Profit/Loss:</strong>
+                    <span class="{{ 'profit' if profit_loss >= 0 else 'loss' }}">
+                        ${{ "%.2f"|format(profit_loss) }}
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-msg">No stocks in your portfolio.</div>
+        {% endif %}
+    </div>
 </body>
 </html>

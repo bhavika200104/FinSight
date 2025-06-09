@@ -1,1 +1,13 @@
-
+{
+    "AAPL": {
+        "amount_invested": 31.0,
+        "current_price": 203.92
+    },
+    "AA": {
+        "amount_invested": 15.0,
+        "current_price": 28.01
+    },
+    "GOOGL": {
+        "amount_invested": 10.0
+    }
+}
